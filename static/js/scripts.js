@@ -17,13 +17,13 @@ function updateCart(id) {
             jumlah: quantity
         })
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Server updated:', data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log('Server updated:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }
 
 // Fungsi untuk mengupdate total harga
@@ -148,10 +148,27 @@ function removeItem(id) {
             }
         });
 
-window.onpageshow = function(event) {
+    window.onpageshow = function (event) {
         if (event.persisted) {
             // Jika terdeteksi dari cache, paksa reload halaman
             window.location.reload();
         }
     };
+
+    window.addEventListener('pageshow', function (event) {
+        // Setiap kali halaman tampil (termasuk dari Back Button),
+        // Kita tanya server: Masih login gak?
+        fetch('/api/check_session')
+            .then(response => response.json())
+            .then(data => {
+                // Jika server bilang sudah logout...
+                if (data.status === 'logged_out') {
+                    // ...Paksa browser muat ulang ke halaman login
+                    window.location.href = '/login';
+                }
+            })
+            .catch(error => {
+                console.error('Gagal mengecek sesi:', error);
+            });
+    });
 }

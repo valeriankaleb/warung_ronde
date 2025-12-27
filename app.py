@@ -1179,6 +1179,13 @@ def reset_token(token):
 
     return render_template('reset_password.html', token=token)
 
+@app.route('/api/check_session')
+def check_session():
+    # Cek apakah user masih ada di sesi
+    if 'username' not in session:
+        return jsonify({'status': 'logged_out'})
+    return jsonify({'status': 'logged_in'})
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
