@@ -523,7 +523,7 @@ def checkout():
     metode_pembayaran = request.form['metode_pembayaran']
     
     # Cek apakah user ingin menukar poin
-    pakai_poin = request.form.get('tukar_poin') # Checkbox dari form HTML
+    pakai_poin = request.form.get('tukar_poin') 
     
     status = 'Menunggu'
     tanggal_pesanan = datetime.now()
@@ -533,9 +533,23 @@ def checkout():
     id_user = session.get('id_user')
     username = session.get('username')
 
+    # BUKA KONEKSI DATABASE
     conn = get_db_connection()
     cur = conn.cursor()
+    
     try:
+        # --- PERBAIKAN 1: Ambil Nomor HP & Poin User Sekaligus ---
+        cur.execute("SELECT nomorHP, poin FROM tbuser WHERE id_user = %s", (id_user,))
+        user_data = cur.fetchone()
+        
+        if user_data:
+            # Ambil nomor HP, jika kosong ganti '0' agar tidak error database
+            nomorHP = user_data[0] if user_data[0] else '0' 
+            current_poin = user_data[1]
+        else:
+            nomorHP = '0'
+            current_poin = 0
+
         # 1. Hitung Total Awal
         for item in cart:
             total_harga += item['harga'] * item['jumlah']
@@ -545,64 +559,49 @@ def checkout():
         potongan = 0
         poin_terpakai = 0
         
-        # Ambil poin user saat ini dari DB
-        cur.execute("SELECT nomorHP, poin FROM tbuser WHERE id_user = %s", (id_user,))
-        user_data = cur.fetchone()
-        current_poin = cur.fetchone()[0]
-        
-        if user_data:
-            nomorHP = user_data[0]
-            current_poin = user_data[1]
-        else:
-            nomorHP = '-' # Default jika user tidak ditemukan (jaga-jaga)
-            current_poin = 0
-
         if pakai_poin and current_poin >= 20:
-            # Aturan: Gratis 1 Item (Kita ambil harga item pertama di cart atau yang termurah sebagai gratis)
-            # Di sini kita ambil item pertama di keranjang untuk digratiskan (1 qty)
             if len(cart) > 0:
-                potongan = cart[0]['harga'] # Gratiskan harga 1 item pertama
-                total_harga -= potongan # Kurangi total harga
-                poin_terpakai = 20 # Kurangi 20 poin
+                potongan = cart[0]['harga'] 
+                total_harga -= potongan 
+                poin_terpakai = 20 
                 item_list.append(f"[BONUS] Gratis {cart[0]['nama']} (Tukar 20 Poin)")
         
         # Pastikan total tidak minus
         if total_harga < 0: total_harga = 0
 
         # 3. Logika Tambah Poin (Earn)
-        # Aturan: Dapat 1 Poin setiap belanja lebih dari Rp 20.000 dari total yang dibayarkan
         if total_harga >= 20000:
             poin_dapat = 1
         else:
             poin_dapat = 0
 
-        # 4. Simpan Pesanan
+        # --- PERBAIKAN 2: Simpan Pesanan (Wajib ada kolom nomorHP) ---
         cur.execute(""" 
             INSERT INTO tbpesanan (id_user, username, nomorHP, item_pesanan, tanggal_pesanan, modifikasi, total_harga, status, alamat, metode_pembayaran) 
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (id_user, username, nomorHP, ', '.join(item_list), tanggal_pesanan, modifikasi, total_harga, status, alamat, metode_pembayaran))
+        """, (id_user, username, str(nomorHP), ', '.join(item_list), tanggal_pesanan, modifikasi, total_harga, status, alamat, metode_pembayaran))
         
-        # 5. Update Poin User (Kurangi jika dipakai, Tambah dari hasil belanja)
+        # 5. Update Poin User
         final_poin = current_poin - poin_terpakai + poin_dapat
         cur.execute("UPDATE tbuser SET poin = %s WHERE id_user = %s", (final_poin, id_user))
 
-        db.commit()
+        conn.commit() # PENTING: Gunakan conn, bukan db
         
         msg = f"Pesanan berhasil! Anda mendapatkan {poin_dapat} poin."
         if poin_terpakai > 0:
             msg += " (20 Poin berhasil ditukarkan)."
         flash(msg, 'success')
+        cart = []  # Kosongkan cart setelah sukses
 
     except Exception as e:
-        db.rollback()
-        flash(f"Error: {str(e)}", 'error')
+        conn.rollback() # PENTING: Gunakan conn, bukan db
+        flash(f"Gagal Checkout: {str(e)}", 'error')
         return redirect(url_for('view_cart'))
     finally:
-        conn.commit()
-        cur.close()
-        conn.close()
+        # Tutup kursor dan koneksi dengan aman
+        if 'cur' in locals(): cur.close()
+        if 'conn' in locals(): conn.close()
 
-    cart = []  # Kosongkan cart setelah checkout
     return redirect(url_for('status'))
 
 @app.route('/remove_from_cart/<int:id>', methods=['POST'])
