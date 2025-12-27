@@ -547,7 +547,15 @@ def checkout():
         
         # Ambil poin user saat ini dari DB
         cur.execute("SELECT nomorHP, poin FROM tbuser WHERE id_user = %s", (id_user,))
+        user_data = cur.fetchone()
         current_poin = cur.fetchone()[0]
+        
+        if user_data:
+            nomorHP = user_data[0]
+            current_poin = user_data[1]
+        else:
+            nomorHP = '-' # Default jika user tidak ditemukan (jaga-jaga)
+            current_poin = 0
 
         if pakai_poin and current_poin >= 20:
             # Aturan: Gratis 1 Item (Kita ambil harga item pertama di cart atau yang termurah sebagai gratis)
@@ -571,7 +579,7 @@ def checkout():
         # 4. Simpan Pesanan
         cur.execute(""" 
             INSERT INTO tbpesanan (id_user, username, nomorHP, item_pesanan, tanggal_pesanan, modifikasi, total_harga, status, alamat, metode_pembayaran) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (id_user, username, nomorHP, ', '.join(item_list), tanggal_pesanan, modifikasi, total_harga, status, alamat, metode_pembayaran))
         
         # 5. Update Poin User (Kurangi jika dipakai, Tambah dari hasil belanja)
