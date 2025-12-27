@@ -14,15 +14,15 @@ import random
 import string
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'AbCdEfGhIjKlMnOpQrStUvWxYz')
+app.secret_key = os.environ.get('SECRET_KEY')
 # --- KONFIGURASI MAIL (Gunakan Email Google/SMTP Anda) ---
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 # Ganti dengan email pengirim dan App Password (bukan password login biasa)
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'valekaleb46@gmail.com')
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = 'valekaleb46@gmail.com'
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
 s = URLSafeTimedSerializer(app.secret_key) # Untuk generate token aman
