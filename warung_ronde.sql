@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 27, 2025 at 12:42 PM
+-- Generation Time: Dec 27, 2025 at 03:36 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,14 +40,6 @@ CREATE TABLE `tbpesanan` (
   `alamat` text NOT NULL,
   `metode_pembayaran` enum('transfer_bank','qris','tunai','e-wallet') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbpesanan`
---
-
-INSERT INTO `tbpesanan` (`id_pesanan`, `id_user`, `username`, `nomorHP`, `item_pesanan`, `tanggal_pesanan`, `modifikasi`, `total_harga`, `status`, `alamat`, `metode_pembayaran`) VALUES
-(55, 18, 'valerian', '', 'Wedang Kacang (2), Wedang Roti (2), Wedang Ronde (1)', '2025-12-16 14:38:38', 'Biji', 60000.00, 'Menunggu', 'Jl. Tidar No.44, Kemirirejo, Kec. Magelang Tengah, Kota Magelang, Jawa Tengah 59214', 'qris'),
-(56, 18, 'valerian', '', 'Wedang Kacang (4), Wedang Roti (2)', '2025-12-16 14:40:50', '', 60000.00, 'Selesai', 'jl.kecamatan fajar no.46', 'tunai');
 
 -- --------------------------------------------------------
 
@@ -95,13 +87,6 @@ CREATE TABLE `tbreview` (
   `tanggal_balasan` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tbreview`
---
-
-INSERT INTO `tbreview` (`id_review`, `id_user`, `id_produk`, `rating`, `komentar`, `tanggal`, `balasan`, `tanggal_balasan`) VALUES
-(4, 18, 3, 5, 'Testw', '2025-12-16 14:37:49', NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -125,8 +110,7 @@ CREATE TABLE `tbuser` (
 
 INSERT INTO `tbuser` (`id_user`, `username`, `password`, `email`, `nomorHP`, `role`, `poin`, `foto_profil`) VALUES
 (1, 'admin', 'scrypt:32768:8:1$fW2brQMe6kH7zjyN$d29ac31bac9ac30597345acda869a44d8d545d86316e5ec3b94c8e0e81d9eb0d82aa7063f39e35ae2f7a50989cd97b0913cf301d560f0db3c87bfa9f1b4a00d6', 'valekaleb46@gmail.com', '087708773589', 'admin', 0, NULL),
-(18, 'valerian', 'scrypt:32768:8:1$vMyj2ATvyErBXmea$025fcfa2bec93bf5db1fb28f295f0aad5c472db4ae5f5baef92b95ca4676b5e6466a755302c100882c69e90663f79ed27f99a41d94123a155fdc7926f615c57c', 'valeriankaleb@students.amikom.ac.id', '087233339999', 'user', 2, NULL),
-(20, 'ichiga', 'scrypt:32768:8:1$OlZzCiriXrlWSH1J$14bd58d197d3ed1cdf1c2398bed5e201cd05b887145527e1b8b3d36eded6aaa60545190704a4e40f217cbf4c08d71c480a01a25de85e70dbe12ab1818cb964ab', 'darkswagtnk@gmail.com', '087708773544', 'user', 0, 'Oqpc2cPEDl.jpg');
+(18, 'valerian', 'scrypt:32768:8:1$vMyj2ATvyErBXmea$025fcfa2bec93bf5db1fb28f295f0aad5c472db4ae5f5baef92b95ca4676b5e6466a755302c100882c69e90663f79ed27f99a41d94123a155fdc7926f615c57c', 'valeriankaleb@students.amikom.ac.id', '087233339999', 'user', 2, NULL);
 
 --
 -- Indexes for dumped tables
