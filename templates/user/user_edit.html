@@ -1,0 +1,83 @@
+{% extends "user/base_user.html" %}
+
+{% block title %}Edit profil{% endblock %}
+
+{% block content %}
+<section class="h-100 gradient-custom py-5">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card rounded-3">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="mt-5">Edit profil {{ user[1] }}</h2>
+
+                        <form method="POST" action="{{ url_for('user_edit_user', id_user=user[0]) }}"
+                            enctype="multipart/form-data">
+
+                            <div class="mb-4 text-center">
+                                <label class="form-label d-block fw-bold">Foto Profil</label>
+                                {% if user[7] %} <img src="{{ url_for('static', filename='img/profiles/' + user[7]) }}"
+                                    class="rounded-circle mb-3"
+                                    style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #ddd;">
+                                {% else %}
+                                <img src="{{ url_for('static', filename='img/undraw_profile.svg') }}"
+                                    class="rounded-circle mb-3"
+                                    style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #ddd;">
+                                {% endif %}
+                                <input type="file" class="form-control" name="foto_profil" accept="image/*">
+                                <small class="text-muted">Format: JPG, PNG. Maks 1MB.</small>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" name="username" value="{{ user[1] }}"
+                                    required />
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" value="{{ user[3] }}" required />
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label class="form-label">No.HP</label>
+                                <input type="text" class="form-control" name="nomorHP" value="{{ user[4] }}" required />
+                            </div>
+
+                            <hr class="my-4">
+                            <h5 class="mb-3">Ganti Password (Opsional)</h5>
+                            <p class="text-muted small">Kosongkan jika tidak ingin mengganti password.</p>
+
+                            <div class="mb-3">
+                                <label for="current_password" class="form-label">Password Saat Ini</label>
+                                <input type="password" class="form-control" id="current_password"
+                                    name="current_password" placeholder="Wajib diisi jika ingin mengganti password">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">Password Baru</label>
+                                    <input type="password" class="form-control" id="password" name="password">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="confirm_password" class="form-label">Konfirmasi Password Baru</label>
+                                    <input type="password" class="form-control" id="confirm_password"
+                                        name="confirm_password">
+                                </div>
+                            </div>
+
+                            <div class="container mt-5">
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <button type="submit" class="btn btn-success btn-lg">Simpan Perubahan</button>
+                                        <a href="{{ url_for('profil') }}" class="btn btn-danger btn-lg">Kembali</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

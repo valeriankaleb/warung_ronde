@@ -1,0 +1,27 @@
+# --- 1. Keamanan & Konfigurasi (SANGAT PENTING) ---
+# Mengabaikan file yang berisi password/kunci rahasia
+.env
+.flaskenv
+instance/
+config.py
+
+# --- 2. Python & Virtual Environment ---
+# Bytecode hasil kompilasi python (tidak perlu diupload)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Folder Virtual Environment (jangan upload venv Anda!)
+venv/
+env/
+.venv/
+
+# --- 3. IDE & System Files ---
+# File konfigurasi editor (VS Code, PyCharm, Mac)
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- 5. Logs & Errors ---
+*.log

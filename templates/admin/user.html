@@ -1,0 +1,41 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}List User{% endblock %}
+
+{% block content %}
+<h2 class="mt-5">Daftar User</h2>
+<table class="table mb-5 table-bordered">
+    <thead class="table-primary">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Email</th>
+            <th>Nomor HP</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td class="password-column">{{ user[2] }}</td>
+            <td>{{ user[3] }}</td>
+            <td>{{ user[4] }}</td>
+            <td>{{ user[5] }}</td>
+            <td>
+                <!-- Tombol Edit -->
+                <a href="{{ url_for('admin_edit_user', id_user=user[0]) }}"
+                    class="btn btn-warning btn-block mb-2">Edit</a>
+                <!-- Tombol Hapus-->
+                <form action="{{ url_for('admin_remove_user', id_user=user[0]) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

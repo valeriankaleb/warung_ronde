@@ -1,0 +1,52 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Homepage - Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mt-5">Detail Pesanan</h2>
+<table class="table mb-5 table-bordered">
+    <thead class="table-primary">
+        <tr>
+            <th>ID Pesanan</th>
+            <th>Username</th>
+            <th>Item Pesanan</th>
+            <th>Tanggal Pesanan</th>
+            <th>Modifikasi</th>
+            <th>Total Harga</th>
+            <th>Status</th>
+            <th>Alamat</th>
+            <th>Metode Pembayaran</th>
+            <th>Hapus Pesanan</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {% for detail in hasil_detail %}
+        <tr>
+            <td>{{ detail[0] }}</td>
+            <td>{{ detail[1] }}</td>
+            <td>{{ detail[2] }}</td>
+            <td>{{ detail[3] }}</td>
+            <td>{{ detail[4] }}</td>
+            <td>{{ detail[5] }}</td>
+            <td>
+                <form action="{{ url_for('update_status', id_pesanan=detail[0]) }}" method="POST">
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="Menunggu" {% if detail[6]=='Menunggu' %}selected{% endif %}>Menunggu</option>
+                        <option value="Diproses" {% if detail[6]=='Diproses' %}selected{% endif %}>Diproses</option>
+                        <option value="Diantar" {% if detail[6]=='Diantar' %}selected{% endif %}>Diantar</option>
+                        <option value="Selesai" {% if detail[6]=='Selesai' %}selected{% endif %}>Selesai</option>
+                    </select>
+                </form>
+            </td>
+            <td>{{ detail[7] }}</td>
+            <td>{{ detail[8] }}</td>
+            <td>
+                <form action="{{ url_for('admin_remove_order', id_pesanan=detail[0]) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

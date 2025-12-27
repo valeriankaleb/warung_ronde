@@ -1,0 +1,91 @@
+/* Pastikan html dan body mengambil tinggi penuh */
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Ubah body menjadi flex container */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* Minimal setinggi layar viewport */
+}
+
+/* Bagian konten utama akan mengisi ruang kosong */
+/* Asumsi: konten utama Anda dibungkus tag <section> atau <div> utama */
+section,
+.main-content {
+    flex: 1;
+}
+
+.star-rating {
+    direction: rtl;
+    display: inline-block;
+    padding: 20px;
+}
+
+.star-rating input[type=radio] {
+    display: none;
+}
+
+.star-rating label {
+    color: #bbb;
+    font-size: 25px;
+    padding: 0;
+    cursor: pointer;
+    -webkit-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+}
+
+.star-rating label:hover,
+.star-rating label:hover~label,
+.star-rating input[type=radio]:checked~label {
+    color: #f2b600;
+}
+
+.checked-star {
+    color: #f2b600;
+}
+
+.star-rating {
+    direction: rtl;
+    display: inline-block;
+    padding: 20px;
+}
+
+.star-rating input[type=radio] {
+    display: none;
+}
+
+.star-rating label {
+    color: #bbb;
+    font-size: 25px;
+    padding: 0;
+    cursor: pointer;
+    -webkit-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+}
+
+.star-rating label:hover,
+.star-rating label:hover~label,
+.star-rating input[type=radio]:checked~label {
+    color: #f2b600;
+}
+
+.checked-star {
+    color: #f2b600;
+}
+
+.unchecked-star {
+    color: #b0b0b0;
+}
+
+.admin-reply-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #0d6efd;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 4px;
+}

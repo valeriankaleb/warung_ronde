@@ -1,0 +1,98 @@
+{% extends "user/base_user.html" %}
+
+{% block title %}Profil Saya{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <div class="col-md-5 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-header bg-dark text-white text-center py-4">
+                        {% if user[6] %}
+                        <img class="img-profile rounded-circle mb-3"
+                            src="{{ url_for('static', filename='img/profiles/' + user[6]) }}" alt="Foto Profil"
+                            style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #e3e6f0;">
+                        {% else %}
+                        <img class="img-profile rounded-circle mb-3"
+                            src="{{ url_for('static', filename='img/undraw_profile.svg') }}" alt="Foto Default"
+                            style="width: 150px; height: 150px; object-fit: cover;">
+                        {% endif %}
+
+                        <h4 class="mb-0">{{ user[0] }}</h4>
+                        <small class="text-white-50">{{ user[1] }}</small>
+                    </div>
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-muted text-uppercase small mb-3">Informasi Kontak</h6>
+
+                        <div class="mb-3">
+                            <label class="small text-muted">Nomor HP</label>
+                            <p class="fw-bold text-dark">{{ user[2] }}</p>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="{{ url_for('user_edit_user', id_user=user[5]) }}" class="btn btn-outline-dark">
+                                <i class="bi bi-pencil-square"></i> Edit Profil
+                            </a>
+                            <a href="{{ url_for('logout') }}" class="btn btn-danger">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7 mb-4">
+                <div class="card shadow border-0 mb-4"
+                    style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="mb-0 text-white-50">Warung Ronde Member</h5>
+                                <h2 class="fw-bold mt-2">{{ user[4] }} Poin</h2>
+                            </div>
+                            <div style="font-size: 3rem; opacity: 0.8;">
+                                <i class="bi bi-trophy-fill text-warning"></i>
+                            </div>
+                        </div>
+
+                        {% set progress = (user[4] / 20 * 100) | int %}
+                        {% if progress > 100 %}{% set progress = 100 %}{% endif %}
+
+                        <label class="small text-white-50 mb-1">
+                            {% if user[4] >= 20 %}
+                            <strong>Selamat!</strong> Anda memiliki klaim item gratis.
+                            {% else %}
+                            Butuh <strong>{{ 20 - user[4] }}</strong> poin lagi untuk item gratis.
+                            {% endif %}
+                        </label>
+                        <div class="progress" style="height: 10px; background-color: rgba(255,255,255,0.2);">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ progress }}%;"
+                                aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary"></i> Cara Mendapatkan Poin
+                        </h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Belanja kelipatan <strong>Rp 20.000</strong></span>
+                                <span class="badge bg-primary rounded-pill">+1 Poin</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Kumpulkan <strong>20 Poin</strong></span>
+                                <span class="badge bg-success rounded-pill">Gratis 1 Item</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

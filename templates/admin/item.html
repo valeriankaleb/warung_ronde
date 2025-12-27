@@ -1,0 +1,42 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Daftar Produk{% endblock %}
+
+{% block content %}
+<h2 class="mt-5">Daftar Produk</h2>
+<a href="{{ url_for('admin_add') }}" class="btn btn-success mb-3">Tambah Produk</a>
+<table class="table mb-5 table-bordered" style="width: 100%;">
+    <thead class="table-primary">
+        <tr>
+            <th>Nama</th>
+            <th>Harga</th>
+            <th>Detail</th>
+            <th>Foto</th>
+            <th>Stok</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in related_products %}
+        <tr>
+            <td>{{ product[1] }}</td>
+            <td>Rp.{{ product[2] }}</td>
+            <td>{{ product[3] }}</td>
+            <td><img src="{{ url_for('static', filename='img/Makanan/' + product[4]) }}" alt="{{ product[1] }}"
+                    style="width: 100px; height: auto;"></td>
+            <td>{{ product[5] }}</td>
+            <td>
+                <!-- Tombol Edit -->
+                <a href="{{ url_for('admin_edit', id=product[0]) }}" class="btn btn-warning btn-block mb-2">Edit</a>
+                <a href="{{ url_for('admin_view', id=product[0]) }}" class="btn btn-warning btn-block mb-2">View</a>
+                <!-- Tombol Delete -->
+                <form action="{{ url_for('admin_remove_item', id=product[0]) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-block"
+                        onclick="return confirm('Apakah Anda yakin ingin menghapus item ini?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

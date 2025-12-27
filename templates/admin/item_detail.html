@@ -1,0 +1,103 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Detail Produk{% endblock %}
+
+{% block content %}
+<!-- Product section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6">
+                <img class="card-img-top mb-5 mb-md-0" src="{{ url_for('static', filename='img/Makanan/' + hasil[4]) }}"
+                    alt="..." />
+            </div>
+            <div class="col-md-6">
+                <h1 class="display-5 fw-bolder">{{ hasil[1] }}</h1>
+                <div class="fs-5 mb-3">
+                    <span>Rp.{{ hasil[2] }}</span>
+                </div>
+                <p class="lead">{{ hasil[3] }}</p><br>
+                Stok <strong>{{ hasil[5] }}</strong>
+
+            </div>
+        </div>
+    </div>
+    <div class="container px-4 px-lg-5 mb-5">
+        <hr>
+        <div class="row">
+            <div class="col-md-8">
+                <h3 class="fw-bolder mb-4"> Ulasan User <span class="badge bg-warning text-dark">{{
+                        avg_rating }} ★</span></h3>
+
+                {% if reviews %}
+                {% for review in reviews %}
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="fw-bold mb-0">{{ review[3] }} <span
+                                        class="text-muted fw-normal">(User)</span></h6>
+                                <div class="text-warning small">
+                                    {% for i in range(1, 6) %}
+                                    {% if i <= review[0] %} <span class="checked-star">★</span>
+                                        {% else %}
+                                        <span class="unchecked-star">★</span>
+                                        {% endif %}
+                                        {% endfor %}
+                                </div>
+                            </div>
+                            <small class="text-muted">{{ review[2].strftime('%d %b %Y, %H:%M') }}</small>
+                            
+                            <form action="{{ url_for('delete_review', id_review=review[6], id_produk=hasil[0]) }}"
+                                method="POST" onsubmit="return confirm('Yakin ingin menghapus ulasan ini?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </form>
+                        </div>
+
+                        <p class="mt-2 mb-2">{{ review[1] }}</p>
+
+                        {% if review[4] %}
+                        <div class="admin-reply-box">
+                            <div class="d-flex justify-content-between">
+                                <strong class="text-primary">Balasan Admin:</strong>
+                                <small class="text-muted">{{ review[5].strftime('%d %b %Y') if review[5] else ''
+                                    }}</small>
+                            </div>
+                            <p class="mb-0 mt-1">{{ review[4] }}</p>
+                        </div>
+                        {% else %}
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#replyForm{{ loop.index }}">
+                                Balas Komentar
+                            </button>
+                            <div class="collapse mt-2" id="replyForm{{ loop.index }}">
+                                <div class="card card-body bg-light">
+                                    <form
+                                        action="{{ url_for('admin_reply_review', id_review=review[6], id_produk=hasil[0]) }}"
+                                        method="POST">
+                                        <div class="mb-2">
+                                            <textarea name="balasan" class="form-control" rows="2"
+                                                placeholder="Tulis balasan Anda di sini..." required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm">Kirim Balasan</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="alert alert-info">Belum ada ulasan untuk produk ini.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+{% endblock %}

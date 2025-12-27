@@ -1,0 +1,58 @@
+{% extends "user/base_user.html" %}
+
+{% block title %}Status Pesanan{% endblock %}
+
+{% block content %}
+<!-- Header-->
+<header class="bg-pink py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Warung Ronde 168</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Nikmati hangatnya wedangan malam hari</p>
+        </div>
+    </div>
+</header>
+<!-- Section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        {% if hasil %}
+        <table class="table table-bordered">
+            <thead class="table-danger">
+                <tr>
+                    <th>Item Pesanan</th>
+                    <th>Tanggal Pesan</th>
+                    <th>Total Harga</th>
+                    <th>Status</th>
+                    <th>Metode Pembayaran</th>
+                    <th>Aksi</th> </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for pesanan in hasil %}
+                <tr>
+                    <td>{{ pesanan[1] }}</td> <td>{{ pesanan[2].strftime('%d-%m-%Y %H:%M') }}</td> <td>Rp. {{ "{:,.0f}".format(pesanan[4]) }}</td> <td>
+                        <span class="badge {% if pesanan[5] == 'Selesai' %}bg-success{% elif pesanan[5] == 'Menunggu' %}bg-warning{% else %}bg-info{% endif %}">
+                            {{ pesanan[5] }}
+                        </span>
+                    </td>
+                    <td>{{ pesanan[7]|upper }}</td> <td>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('order_detail', id_pesanan=pesanan[0]) }}" class="btn btn-primary btn-sm">
+                                Lihat Detail
+                            </a>
+
+                            <form action="{{ url_for('remove_order', id_pesanan=pesanan[0]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus riwayat ini?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Tidak ada pesanan yang ditemukan.</p>
+        {% endif %}
+    </div>
+</section>
+<!-- Footer -->
+{% endblock %}

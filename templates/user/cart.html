@@ -1,0 +1,141 @@
+{% extends "user/base_user.html" %}
+
+{% block title %}Keranjang{% endblock %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('checkout') }}">
+    <section class="h-100 gradient-custom">
+        <div class="container py-5">
+            <div class="row d-flex justify-content-center my-4">
+                <div class="col-md-8">
+                    <div class="col-lg-12 card mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0">Cart - {{ cart|length }} items</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for item in cart %}
+                            <div class="row mb-4">
+                                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+                                    <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                        data-mdb-ripple-color="light">
+                                        <img src="{{ url_for('static', filename='img/Makanan/' + item.foto) }}"
+                                            class="w-100" alt="Foto Makanan" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                                    <p><strong>{{ item.nama }}</strong></p>
+                                    <form method="POST" action="{{ url_for('update_cart') }}">
+                                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                                        <div class="d-flex mb-4" style="max-width: 300px">
+                                            <button type="button" class="btn btn-primary px-3 me-2"
+                                                onclick="this.parentNode.querySelector('input[type=number]').stepDown(); updateCart({{ item.id }})">
+                                                -
+                                            </button>
+
+                                            <input id="jumlah_{{ item.id }}" name="jumlah_{{ item.id }}"
+                                                value="{{ item.jumlah }}" type="number" class="form-control text-center"
+                                                min="1" onchange="updateCart({{ item.id }})"
+                                                onkeyup="updateCart({{ item.id }})" />
+
+                                            <button type="button" class="btn btn-primary px-3 ms-2"
+                                                onclick="this.parentNode.querySelector('input[type=number]').stepUp(); updateCart({{ item.id }})">
+                                                +
+                                            </button>
+                                        </div>
+                                        <p class="text-start text-md-center price-display"><strong>Rp.{{ item.harga
+                                                }}</strong></p>
+                                        <input type="hidden" class="item-harga" value="{{ item.harga }}">
+                                    </form>
+                                </div>
+                                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 text-center">
+                                    <button type="button" class="btn btn-outline-danger mt-3"
+                                        onclick="removeItem({{ item.id }})" style="width: 200px;">Hapus</button>
+                                </div>
+                                <hr class="my-4" />
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="col-lg-12 card mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0">Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                    Products
+                                    <span id="total_harga">Rp.0</span> <!-- Inisialisasi total harga -->
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    Shipping
+                                    <span>Gratis</span>
+                                </li>
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                    <div>
+                                        <strong>Total amount</strong>
+                                        <strong>
+                                            <p class="mb-0">(including VAT)</p>
+                                        </strong>
+                                    </div>
+                                    <span id="total_harga2"><strong>Rp.0</strong></span>
+                                    <!-- Inisialisasi total harga -->
+                                </li>
+                            </ul>
+
+
+                            <label for="alamat" class="form-label">Alamat Pengiriman</label>
+                            <input type="text" class="form-control" id="alamat" name="alamat" required>
+
+                            <label for="modifikasi" class="form-label">Modifikasi</label>
+                            <input type="text" name="modifikasi" class="form-control" />
+
+                            <label for="metode_pembayaran" class="form-label">Metode Pembayaran</label>
+                            <select name="metode_pembayaran" class="form-select" required>
+                                <option value="" disabled selected>Select Payment Method</option>
+                                <option value="tunai">Tunai</option>
+                                <option value="qris">QRIS/Gopay</option>
+                                <option value="transfer_bank">Transfer Bank</option>
+                            </select>
+
+                            <div class="card mt-3 mb-3 border-info">
+                                <div class="card-body">
+                                    <h5 class="card-title">Loyalty Points</h5>
+                                    <p>Poin Anda saat ini: <strong>{{ user_poin }}</strong></p>
+
+                                    {% if user_poin >= 20 %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="yes" id="tukar_poin"
+                                            name="tukar_poin">
+                                        <label class="form-check-label fw-bold text-success" for="tukar_poin">
+                                            Tukar 20 Poin untuk GRATIS 1 Item Paling Atas
+                                        </label>
+                                    </div>
+                                    {% else %}
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-warning" role="progressbar"
+                                            style="width: {{ (user_poin / 20) * 100 }}%;"
+                                            aria-valuenow="{{ user_poin }}" aria-valuemin="0" aria-valuemax="20">
+                                            {{ user_poin }}/20
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Kumpulkan {{ 20 - user_poin }} poin lagi untuk dapat item
+                                        gratis!</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg btn-block mt-3">Check Out</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+<!-- Footer -->
+{% endblock %}

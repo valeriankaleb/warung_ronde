@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>{% block title %}RONDE 168{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename='js/alert.js') }}"></script>
+    {% block head %}{% endblock %}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-purple">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#!">RONDE 168</a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="/user_dashboard">Home</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/user_about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/status">Status Pesanan</a></li>
+                </ul>
+                <form class="d-flex">
+                    <a href="/cart" class="btn btn-outline-dark" type="submit">
+                        <img src="{{ url_for('static', filename='cart.svg') }}" alt="Cart" />
+                        Cart
+                    </a>
+                </form>
+
+                {% if user %}
+                <form class="d-flex" style="margin-left: 20px;">
+                    <a href="{{ url_for('profil', id_user=user[0]) }}" class="btn btn-warning btn-block">Profile
+                        user</a>
+                </form>
+                {% endif %}
+
+                <form class="d-flex" style="margin-left: 20px;">
+                    <a href="{{ url_for('logout') }}" class="btn btn-custom">Logout</a>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow-1">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-dark text-light text-center p-3 mt-auto">
+        <p>© 2025 Warung Ronde 168. All rights reserved.</p>
+        <div>
+            <a href="#" class="text-light mx-2">Facebook</a>
+            <a href="#" class="text-light mx-2">Twitter</a>
+            <a href="#" class="text-light mx-2">Instagram</a>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            {% for category, message in messages %}
+            var type = "{{ category }}";
+            var titleText = "Notifikasi";
+
+            if (type === "error" || type === "danger") {
+                type = "error";
+                titleText = "Gagal!";
+            } else if (type === "success") {
+                type = "success";
+                titleText = "Berhasil!";
+            }
+
+            Swal.fire({
+                title: titleText,
+                text: "{{ message }}",
+                icon: type,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6'
+            });
+            {% endfor %}
+        });
+    </script>
+    {% endif %}
+    {% endwith %}
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

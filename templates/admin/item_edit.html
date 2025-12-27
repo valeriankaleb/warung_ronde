@@ -1,0 +1,38 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Edit Produk{% endblock %}
+
+{% block content %}
+<h2 class="mt-5">Edit Produk</h2>
+
+<form action="{{ url_for('admin_edit', id=product[0]) }}" method="POST">
+    <div class="form-group mb-4">
+        <label class="form-label">Nama Produk</label>
+        <input type="text" class="form-control" name="nama" value="{{ product[1] }}" required />
+    </div>
+
+    <div class="form-group mb-4">
+        <label class="form-label">Harga Produk</label>
+        <input type="number" class="form-control" name="harga" value="{{ product[2] }}" required />
+    </div>
+
+    <div class="form-group mb-4">
+        <label class="form-label">Detail</label>
+        <textarea class="form-control" name="detail" style="width: 200; height: 250px;"
+            required>{{ product[4] }}</textarea>
+    </div>
+
+    <div class="form-group mb-4">
+        <label class="form-label">Stok</label>
+        <select name="stok">
+            <option value="Tersedia">Tersedia</option>
+            <option value="Habis">Habis</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg">Update Produk</button>
+    <a href="{{ url_for('admin_produk') }}" class="btn btn-danger btn-lg" type="submit">
+        Kembali
+    </a>
+</form>
+{% endblock %}

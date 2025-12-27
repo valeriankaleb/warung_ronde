@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Register Page</title>
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+  <script src="{{ url_for('static', filename='js/alert.js') }}"></script>
+</head>
+
+<body>
+  <section class="h-100 gradient-custom" style="background-color: #8fc4b7; min-height: 100vh;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-8 col-xl-6">
+          <div class="card rounded-3">
+            <img src="{{ url_for('static', filename='img/img_1.jpg') }}" class="w-100"
+              style="border-top-left-radius: .3rem; border-top-right-radius: .3rem;" alt="Sample photo">
+            <div class="card-body p-4 p-md-5">
+              <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Registration Info</h3>
+
+              <form class="px-md-2" method="POST" action="{{ url_for('register') }}">
+
+                <div form-group class="form-outline mb-4">
+                  <label class="form-label">Name</label>
+                  <input type="text" class="form-control" name="username" placeholder="Username" required />
+                </div>
+
+                <div data-mdb-input-init class="form-outline mb-4" required>
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" name="email" placeholder="email" />
+                </div>
+
+                <div data-mdb-input-init class="form-outline mb-4">
+                  <label class="form-label">No.HP</label>
+                  <input type="number" class="form-control" name="nomorHP" placeholder="nomorHP" required />
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-4">
+                    <label class="form-label text-center">Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password" required />
+                  </div>
+                  <div class="col-md-6 mb-4">
+                    <label class="form-label text-center">Confirm Password</label>
+                    <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password"
+                      required />
+                  </div>
+                </div>
+
+                <div class="form-check d-flex justify-content-center mb-5">
+                  <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3cg" />
+                  <label class="form-check-label">
+                    I agree all statements in <a href="#!" class="text-body"><u>Terms of service</u></a>
+                  </label>
+                </div>
+
+                <div class="container mt-5">
+                  <div class="row">
+                    <div class="col text-center">
+                      <button type="submit" class="btn btn-success btn-lg">Submit</button>
+                      <a href="{{ url_for('home') }}" class="btn btn-danger btn-lg" type="submit">
+                        Kembali
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="/login/"
+                    class="fw-bold text-body"><u>Login here</u></a></p>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Core theme JS-->
+  <script src="js/scripts.js"></script>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      {% for category, message in messages %}
+      // Mapping kategori flask ke icon SweetAlert
+      var type = "{{ category }}";
+      var titleText = "Notifikasi";
+
+      if (type === "error" || type === "danger") {
+        type = "error";
+        titleText = "Gagal!";
+      } else if (type === "success") {
+        type = "success";
+        titleText = "Berhasil!";
+      } else if (type === "info") {
+        type = "info";
+        titleText = "Informasi";
+      }
+
+      // Tampilkan Pop-up
+      Swal.fire({
+        title: titleText,
+        text: "{{ message }}",
+        icon: type,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6'
+      });
+      {% endfor %}
+    });
+  </script>
+  {% endif %}
+  {% endwith %}
+</body>
+
+</html>
