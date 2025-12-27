@@ -344,11 +344,11 @@ def user_edit_user(id_user):
             val_update.append(id_user)
 
             cur.execute(sql_update, tuple(val_update))
-            db.commit()
+            conn.commit()
             flash('Profil berhasil diperbarui!', 'success')
 
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash(f'Terjadi kesalahan: {str(e)}', 'error')
         finally:
             conn.commit()
@@ -466,10 +466,10 @@ def remove_order(id_pesanan):
         cur = conn.cursor()
         try:
             cur.execute("DELETE FROM tbpesanan WHERE id_pesanan = %s AND id_user = %s", (id_pesanan, id_user))
-            db.commit()
+            conn.commit()
             flash('Pesanan berhasil dihapus.', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash('Terjadi kesalahan saat menghapus pesanan.', 'error')
         finally:
             conn.commit()
@@ -661,10 +661,10 @@ def update_status(id_pesanan):
         cur = conn.cursor()
         try:
             cur.execute("UPDATE tbpesanan SET status = %s WHERE id_pesanan = %s", (new_status, id_pesanan))
-            db.commit()
+            conn.commit()
             flash('Status pesanan berhasil diperbarui.', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash('Terjadi kesalahan saat memperbarui status pesanan.', 'error')
         finally:
             conn.commit()
@@ -681,10 +681,10 @@ def admin_remove_order(id_pesanan):
         cur = conn.cursor()
         try:
             cur.execute("DELETE FROM tbpesanan WHERE id_pesanan = %s", (id_pesanan,))
-            db.commit()
+            conn.commit()
             flash('Pesanan berhasil dihapus.', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash('Terjadi kesalahan saat menghapus pesanan.', 'error')
         finally:
             conn.commit()
@@ -735,10 +735,10 @@ def admin_remove_user(id_user):
         cur = conn.cursor()
         try:
             cur.execute("DELETE FROM tbuser WHERE id_user = %s", (id_user,))
-            db.commit()
+            conn.commit()
             flash('User  berhasil dihapus.', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash('Terjadi kesalahan saat menghapus user.', 'error')
         finally:
             conn.commit()
@@ -783,10 +783,10 @@ def admin_edit_user(id_user):
                     WHERE id_user = %s
                 """, (username, email, nomorHP, role, id_user))
                 
-            db.commit()
+            conn.commit()
             flash('User  berhasil diperbarui!', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash(f'Terjadi kesalahan saat memperbarui user: {str(e)}', 'error')
         finally:
             conn.commit()
@@ -826,10 +826,10 @@ def admin_remove_item(id):
 
             # Hapus produk dari database
             cur.execute("DELETE FROM tbproduk WHERE id = %s", (id,))
-            db.commit()
+            conn.commit()
             flash('Produk berhasil dihapus.', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash('Terjadi kesalahan saat menghapus produk: {}'.format(str(e)), 'error')
         finally:
             conn.commit()
@@ -873,10 +873,10 @@ def admin_add_product():
                 INSERT INTO tbproduk (nama, harga, detail, foto, stok) 
                 VALUES (%s, %s, %s, %s, %s)
             """, (nama, harga, detail, random_filename, stok))
-            db.commit()
+            conn.commit()
             flash('Produk berhasil ditambahkan!', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash(f'Terjadi kesalahan saat menambahkan produk: {str(e)}', 'error')
         finally:
             conn.commit()
@@ -907,10 +907,10 @@ def admin_edit(id):
                 WHERE id = %s
             """, (nama, harga, detail, stok, id))
 
-            db.commit()
+            conn.commit()
             flash('Produk berhasil diperbarui!', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash(f'Terjadi kesalahan saat memperbarui produk: {str(e)}', 'error')
         finally:
             conn.commit()
@@ -994,10 +994,10 @@ def admin_reply_review(id_review, id_produk):
                 SET balasan = %s, tanggal_balasan = %s 
                 WHERE id_review = %s
             """, (balasan, tanggal_balasan, id_review))
-            db.commit()
+            conn.commit()
             flash('Balasan berhasil dikirim.', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash(f'Error: {str(e)}', 'error')
         finally:
             conn.commit()
@@ -1028,10 +1028,10 @@ def submit_review(id_produk):
                 INSERT INTO tbreview (id_user, id_produk, rating, komentar, tanggal)
                 VALUES (%s, %s, %s, %s, %s)
             """, (id_user, id_produk, rating, komentar, tanggal))
-            db.commit()
+            conn.commit()
             flash('Terima kasih atas ulasan Anda!', 'success')
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash(f'Terjadi kesalahan: {str(e)}', 'error')
         finally:
             conn.commit()
@@ -1065,10 +1065,10 @@ def delete_review(id_review, id_produk):
                 flash('Anda tidak berhak menghapus ulasan ini.', 'error')
                 return redirect(url_for('user_detail', id=id_produk))
 
-        db.commit()
+        conn.commit()
         flash('Ulasan berhasil dihapus.', 'success')
     except Exception as e:
-        db.rollback()
+        conn.rollback()
         flash(f'Gagal menghapus: {str(e)}', 'error')
     finally:
         conn.commit()
@@ -1155,11 +1155,11 @@ def reset_token(token):
         cur = conn.cursor()
         try:
             cur.execute("UPDATE tbuser SET password = %s WHERE email = %s", (hashed_password, email))
-            db.commit()
+            conn.commit()
             flash('Password berhasil diubah! Silakan login.', 'success')
             return redirect(url_for('login'))
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash(f'Terjadi kesalahan database: {str(e)}', 'error')
         finally:
             conn.commit()
