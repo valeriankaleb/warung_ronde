@@ -117,12 +117,19 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        cursor = db.cursor()
-        cursor.execute("SELECT id_user, username, password, role FROM tbuser WHERE username = %s", (username,))
-        user = cursor.fetchone()
-        cursor.close()
+        # --- KODE BARU: Buka koneksi sendiri ---
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        user = None
+        try:
+            cursor.execute("SELECT id_user, username, password, role FROM tbuser WHERE username = %s", (username,))
+            user = cursor.fetchone()
+        finally:
+            cursor.close()
+            conn.close() # PENTING: Tutup koneksi
 
-        if user and check_password_hash(user[2], password):  # Check hashed password
+        if user and check_password_hash(user[2], password):
             session['username'] = username
             session['role'] = user[3]
             session['id_user'] = user[0]
@@ -145,7 +152,11 @@ def register():
         noHP = request.form['nomorHP']
         role = 'user'
 
-        cursor = db.cursor()
+        # --- PERUBAHAN DIMULAI DI SINI ---
+        # 1. Buka koneksi baru
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
         try:
             # --- 1. CEK EMAIL DUPLIKAT ---
             cursor.execute("SELECT id_user FROM tbuser WHERE email = %s", (email,))
@@ -153,25 +164,28 @@ def register():
                 flash('Email sudah terdaftar. Gunakan email lain.', 'error')
                 return render_template('signup.html')
 
-            # --- 2. CEK USERNAME DUPLIKAT (BARU) ---
+            # --- 2. CEK USERNAME DUPLIKAT ---
             cursor.execute("SELECT id_user FROM tbuser WHERE username = %s", (username,))
             if cursor.fetchone():
                 flash('Username sudah digunakan orang lain. Silakan pilih username baru.', 'error')
                 return render_template('signup.html')
             
-            # --- 3. PROSES SIMPAN DATA (Jika lolos semua cek) ---
+            # --- 3. PROSES SIMPAN DATA ---
             cursor.execute("INSERT INTO tbuser (username, password, email, nomorHP, role) VALUES (%s, %s, %s, %s, %s)", 
                         (username, hashed_password, email, noHP, role))
-            db.commit()
+            
+            conn.commit() # Gunakan conn, bukan db
             flash('Registration successful! Silakan Login.', 'success')
             return redirect(url_for('login'))
             
         except Exception as e:
-            db.rollback() 
+            conn.rollback() # Gunakan conn, bukan db
             flash(f'Terjadi kesalahan: {str(e)}', 'error')
             return render_template('signup.html')
         finally:
+            # 4. WAJIB TUTUP KONEKSI AGAR SERVER TIDAK CRASH
             cursor.close()
+            conn.close()
             
     return render_template('signup.html')
 
