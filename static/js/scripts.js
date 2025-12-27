@@ -147,4 +147,11 @@ function removeItem(id) {
                 location.reload();
             }
         });
+
+window.onpageshow = function(event) {
+        if (event.persisted) {
+            // Jika terdeteksi dari cache, paksa reload halaman
+            window.location.reload();
+        }
+    };
 }
