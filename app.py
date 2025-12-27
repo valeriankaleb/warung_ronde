@@ -77,6 +77,17 @@ def generate_random_string(length=10):
     random_string = ''.join(random.choice(letters) for i in range(length))
     return random_string
 
+@app.after_request
+def add_header(response):
+    """
+    Memaksa browser untuk tidak menyimpan cache dari halaman apapun.
+    Ini mencegah user menekan tombol 'Back' setelah logout.
+    """
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 @app.route('/', methods=['GET'])
 def home():
     conn = get_db_connection()
