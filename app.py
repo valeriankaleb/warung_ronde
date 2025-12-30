@@ -130,7 +130,7 @@ def detail(id):
     conn.commit()
     cur.close()
     conn.close()
-    return render_template('item.html', product=product, related_products=related_products)
+    return render_template('item.html', product=product, related_products=related_products, reviews=reviews, avg_rating=avg_rating)
 
 user_bp = Blueprint('user', __name__, template_folder='user')
 admin_bp = Blueprint('admin', __name__, template_folder='admin')
