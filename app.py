@@ -114,6 +114,19 @@ def detail(id):
     cur.execute("SELECT id, nama, harga, foto, stok FROM tbproduk WHERE id != %s ORDER BY RAND() LIMIT 4", (id,))
     related_products = cur.fetchall()
 
+    cur.execute("""
+        SELECT r.rating, r.komentar, r.tanggal, u.username, r.balasan, r.tanggal_balasan, r.id_review, r.id_user 
+        FROM tbreview r 
+        JOIN tbuser u ON r.id_user = u.id_user 
+        WHERE r.id_produk = %s 
+        ORDER BY r.tanggal DESC
+    """, (id,))
+    reviews = cur.fetchall()
+
+    cur.execute("SELECT AVG(rating) FROM tbreview WHERE id_produk = %s", (id,))
+    avg_rating = cur.fetchone()[0]
+    avg_rating = round(avg_rating, 1) if avg_rating else 0
+
     conn.commit()
     cur.close()
     conn.close()
